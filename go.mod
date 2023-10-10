@@ -4,6 +4,7 @@ go 1.21
 
 require (
 	github.com/efficientgo/core v1.0.0-rc.2
+	github.com/golang/mock v1.6.0
 	github.com/rs/zerolog v1.31.0
 )
 
