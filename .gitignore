@@ -24,3 +24,4 @@ go.work
 /.idea/misc.xml
 /.idea/modules.xml
 /taxi-fares.iml
+/.idea/vcs.xml
