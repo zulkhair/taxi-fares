@@ -25,3 +25,5 @@ go.work
 /.idea/modules.xml
 /taxi-fares.iml
 /.idea/vcs.xml
+/coverage.html
+/profile.cov
