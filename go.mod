@@ -6,6 +6,7 @@ require (
 	github.com/efficientgo/core v1.0.0-rc.2
 	github.com/golang/mock v1.6.0
 	github.com/rs/zerolog v1.31.0
+	gopkg.in/yaml.v2 v2.4.0
 )
 
 require (

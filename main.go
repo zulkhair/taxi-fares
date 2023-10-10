@@ -3,11 +3,14 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io"
 	"os"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/zulkhair/taxi-fares/controller/console"
+	"github.com/zulkhair/taxi-fares/domain/config"
+	"gopkg.in/yaml.v2"
 )
 
 func main() {
@@ -15,8 +18,21 @@ func main() {
 	flag.StringVar(&mode, "mode", "console", "console/http")
 	flag.Parse()
 
+	// Read Config file
+	c := readConfigFile()
+	if c == nil {
+		log.Info().Msgf("Using default values")
+	}
+
 	// Setup log
-	file, _ := os.OpenFile("app.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0664)
+	logFile := "app.log"
+	if c != nil && c.Log.File != "" {
+		logFile = c.Log.File
+	}
+	file, err := os.OpenFile(logFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0664)
+	if err != nil {
+		log.Fatal().Msgf("Cannot open log file, err : %v", err)
+	}
 	log.Logger = zerolog.New(file).With().Timestamp().Logger()
 
 	switch mode {
@@ -27,6 +43,27 @@ func main() {
 	default:
 		log.Fatal().Msgf("Mode '%s' not found", mode)
 	}
+}
+
+func readConfigFile() *config.Config {
+	file, err := os.Open("config.yaml")
+	if err != nil {
+		log.Error().Msgf("Cannot open config file, err : %v", err)
+		return nil
+	}
+	content, err := io.ReadAll(file)
+	if err != nil {
+		log.Error().Msgf("Cannot read config file, err : %v", err)
+		return nil
+	}
+
+	var cfg config.Config
+	err = yaml.Unmarshal(content, &cfg)
+	if err != nil {
+		log.Error().Msgf("Cannot unmarshal config file, err : %v", err)
+		return nil
+	}
+	return &cfg
 }
 
 func startHttp() {
