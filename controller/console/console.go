@@ -3,6 +3,7 @@ package console
 import (
 	"github.com/zulkhair/taxi-fares/controller/console/handler"
 	"github.com/zulkhair/taxi-fares/usecase/fares"
+	"os"
 )
 
 // Console is the struct for console. It contains the console instance.
@@ -27,6 +28,6 @@ func New() (*Console, error) {
 	return c, nil
 }
 
-func (c *Console) StartCalculateTaxiFares() error {
-	return c.handler.CalculateFares()
+func (c *Console) StartApp() error {
+	return c.handler.CalculateFares(os.Stdin)
 }

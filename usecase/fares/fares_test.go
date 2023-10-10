@@ -109,14 +109,7 @@ func TestFares_CalculateFares(t *testing.T) {
 
 			fares := New()
 
-			got, err := fares.CalculateFares(tt.args.taxiData)
-			switch {
-			case tt.wantErr:
-				testutil.NotOk(t, err)
-			default:
-				testutil.Ok(t, err)
-			}
-
+			got := fares.CalculateFares(tt.args.taxiData)
 			testutil.Equals(t, tt.want, got)
 		})
 	}

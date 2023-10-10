@@ -42,7 +42,7 @@ func startConsole() {
 	if err != nil {
 		log.Fatal().Msgf("Cannot start console, err : %v", err)
 	}
-	err = c.StartCalculateTaxiFares()
+	err = c.StartApp()
 	if err != nil {
 		log.Err(err)
 		os.Exit(1)

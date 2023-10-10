@@ -10,13 +10,12 @@ import (
 	"time"
 )
 
-func (h *Handler) CalculateFares() (err error) {
+func (h *Handler) CalculateFares(in *os.File) (err error) {
 	/*** User Input ***/
-	scn := bufio.NewScanner(os.Stdin)
-
 	fmt.Println("(To submit, use '!') Enter Lines :")
 	var lines []string
 
+	scn := bufio.NewScanner(in)
 	for scn.Scan() {
 		line := scn.Text()
 		if len(line) == 1 {
@@ -105,10 +104,7 @@ func (h *Handler) CalculateFares() (err error) {
 	}
 
 	/*** Usecase Logic ***/
-	fares, err := h.fares.CalculateFares(taxiData)
-	if err != nil {
-		return
-	}
+	fares := h.fares.CalculateFares(taxiData)
 
 	/*** Print Output ***/
 	fmt.Printf("\n%d\n", fares.Fare)

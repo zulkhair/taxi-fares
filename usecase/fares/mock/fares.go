@@ -35,12 +35,11 @@ func (m *MockUsecase) EXPECT() *MockUsecaseMockRecorder {
 }
 
 // CalculateFares mocks base method.
-func (m *MockUsecase) CalculateFares(taxiData []taxidata.TaxiData) (*taxidata.Fares, error) {
+func (m *MockUsecase) CalculateFares(taxiData []taxidata.TaxiData) *taxidata.Fares {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CalculateFares", taxiData)
 	ret0, _ := ret[0].(*taxidata.Fares)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	return ret0
 }
 
 // CalculateFares indicates an expected call of CalculateFares.

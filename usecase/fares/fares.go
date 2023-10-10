@@ -8,7 +8,7 @@ import (
 // Usecase is an interface that handles business logic for fares domain.
 type Usecase interface {
 	// CalculateFares : is a function to calculate fares and return sorted taxis data
-	CalculateFares(taxiData []taxidatadomain.TaxiData) (fares *taxidatadomain.Fares, err error)
+	CalculateFares(taxiData []taxidatadomain.TaxiData) *taxidatadomain.Fares
 }
 
 // Fares is an object that implements Usecase interface.
@@ -21,9 +21,9 @@ func New() Usecase {
 }
 
 // CalculateFares is a function to calculate fares and return sorted taxis data
-func (uc Fares) CalculateFares(taxiData []taxidatadomain.TaxiData) (fares *taxidatadomain.Fares, err error) {
+func (uc Fares) CalculateFares(taxiData []taxidatadomain.TaxiData) *taxidatadomain.Fares {
 	// Create return value
-	fares = &taxidatadomain.Fares{
+	fares := &taxidatadomain.Fares{
 		Fare:     calculateFare(taxiData[len(taxiData)-1].Distance),
 		TaxiData: taxiData,
 	}
@@ -33,7 +33,7 @@ func (uc Fares) CalculateFares(taxiData []taxidatadomain.TaxiData) (fares *taxid
 		return taxiData[i].MileageDifference > taxiData[j].MileageDifference
 	})
 
-	return
+	return fares
 }
 
 // calculateFare is function to calculate fare from total mileage
