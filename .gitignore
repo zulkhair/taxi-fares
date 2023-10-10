@@ -19,3 +19,8 @@
 
 # Go workspace file
 go.work
+/app.log
+/.idea/.gitignore
+/.idea/misc.xml
+/.idea/modules.xml
+/taxi-fares.iml
