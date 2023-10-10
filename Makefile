@@ -16,3 +16,12 @@ mock:
 		done; \
 	done; \
 	echo "Mock generation complete!"
+
+# run go app
+run:
+	@go run main.go
+
+# generate test coverage
+test:
+	@go test -coverpkg=./... -coverprofile=profile.cov ./... > /dev/null 2>&1
+	@go tool cover -func profile.cov
