@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -25,9 +26,12 @@ func main() {
 	}
 
 	// Setup log
-	logFile := "app.log"
+	logFile := "log/app.log"
 	if c != nil && c.Log.File != "" {
 		logFile = c.Log.File
+	}
+	if _, err := os.Stat(logFile); os.IsNotExist(err) {
+		os.MkdirAll(filepath.Dir(logFile), 0700)
 	}
 	file, err := os.OpenFile(logFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0664)
 	if err != nil {

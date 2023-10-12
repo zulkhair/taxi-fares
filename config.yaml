@@ -1,2 +1,2 @@
 log:
-  file: ./app.log
+  file: log/app.log
