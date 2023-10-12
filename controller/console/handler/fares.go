@@ -12,7 +12,7 @@ import (
 
 func (h *Handler) CalculateFares(in *os.File) (err error) {
 	/*** User Input ***/
-	fmt.Println("(To submit, use '!') Enter Lines :")
+	fmt.Println("Enter Lines (To submit, input only '!') :")
 	var lines []string
 
 	scn := bufio.NewScanner(in)
