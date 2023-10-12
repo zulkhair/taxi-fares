@@ -25,3 +25,7 @@ run:
 test:
 	@go test -coverpkg=./... -coverprofile=profile.cov ./... > /dev/null 2>&1
 	@go tool cover -func profile.cov
+
+# build app
+build:
+	@go build -o taxi-fares main.go
