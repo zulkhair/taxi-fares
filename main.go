@@ -85,7 +85,7 @@ func startConsole() {
 	}
 	err = c.StartApp()
 	if err != nil {
-		log.Err(err)
+		log.Error().Msg(err.Error())
 		os.Exit(1)
 	}
 }

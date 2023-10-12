@@ -41,7 +41,7 @@ func TestHandler_CalculateFares(t *testing.T) {
 			},
 			name: "Success",
 			args: args{
-				content: []byte("00:00:00.000 0.0\n00:01:00.123 480.9\n00:02:00.125 1141.2\n00:03:00.100 1800.8\n!"),
+				content: []byte("00:00:00.000 0.0\n00:01:00.123 480.9\n00:02:00.125 1141.2\n00:03:00.100 1800.8"),
 			},
 			want: nil,
 		},
@@ -49,73 +49,81 @@ func TestHandler_CalculateFares(t *testing.T) {
 			prepare: func(f *fields) {},
 			name:    "Error less than two lines",
 			args: args{
-				content: []byte("00:00:00.000 0.0\n!"),
+				content: []byte("\n"),
 			},
-			want: fmt.Errorf("less than two lines of data, input [00:00:00.000 0.0]"),
+			want: fmt.Errorf("less than two lines of data, input ''"),
+		},
+		{
+			prepare: func(f *fields) {},
+			name:    "Error less than two lines 2",
+			args: args{
+				content: []byte("00:00:00.000 0.0"),
+			},
+			want: fmt.Errorf("less than two lines of data, input '00:00:00.000 0.0'"),
 		},
 		{
 			prepare: func(f *fields) {},
 			name:    "Error blank line",
 			args: args{
-				content: []byte("00:00:00.000 0.0\n\n!"),
+				content: []byte("00:00:00.000 0.0\n "),
 			},
-			want: fmt.Errorf("blank line at row 1, input [00:00:00.000 0.0 ]"),
+			want: fmt.Errorf("blank line at row 1, input '00:00:00.000 0.0\n '"),
 		},
 		{
 			prepare: func(f *fields) {},
 			name:    "Error improper format",
 			args: args{
-				content: []byte("00:00:00.000 0.0\nimproper-format\n!"),
+				content: []byte("00:00:00.000 0.0\nimproper-format"),
 			},
-			want: fmt.Errorf("improper format at row 1, input [00:00:00.000 0.0 improper-format]"),
+			want: fmt.Errorf("improper format at row 1, input '00:00:00.000 0.0\nimproper-format'"),
 		},
 		{
 			prepare: func(f *fields) {},
 			name:    "Error invalid time format",
 			args: args{
-				content: []byte("00:00:00.000 0.0\n1:12:12.12 0.0\n!"),
+				content: []byte("00:00:00.000 0.0\n1:12:12.12 0.0"),
 			},
-			want: fmt.Errorf("invalid time format at row 1, input [00:00:00.000 0.0 1:12:12.12 0.0]"),
+			want: fmt.Errorf("invalid time format at row 1, input '00:00:00.000 0.0\n1:12:12.12 0.0'"),
 		},
 		{
 			prepare: func(f *fields) {},
 			name:    "Error past time has been sent",
 			args: args{
-				content: []byte("00:00:00.000 0.0\n00:01:00.000 100.0\n00:00:02.000 100.0\n!"),
+				content: []byte("00:00:00.000 0.0\n00:01:00.000 100.0\n00:00:02.000 100.0"),
 			},
-			want: fmt.Errorf("past time has been sent at row 2, input [00:00:00.000 0.0 00:01:00.000 100.0 00:00:02.000 100.0]"),
+			want: fmt.Errorf("past time has been sent at row 2, input '00:00:00.000 0.0\n00:01:00.000 100.0\n00:00:02.000 100.0'"),
 		},
 		{
 			prepare: func(f *fields) {},
 			name:    "Error interval between records is more than 5 minutes",
 			args: args{
-				content: []byte("00:00:00.000 0.0\n00:07:00.000 100.0\n00:00:02.000 100.0\n!"),
+				content: []byte("00:00:00.000 0.0\n00:07:00.000 100.0\n00:00:02.000 100.0"),
 			},
-			want: fmt.Errorf("interval between records is more than 5 minutes at row 1, input [00:00:00.000 0.0 00:07:00.000 100.0 00:00:02.000 100.0]"),
+			want: fmt.Errorf("interval between records is more than 5 minutes at row 1, input '00:00:00.000 0.0\n00:07:00.000 100.0\n00:00:02.000 100.0'"),
 		},
 		{
 			prepare: func(f *fields) {},
 			name:    "Error invalid distance format",
 			args: args{
-				content: []byte("00:00:00.000 0.0\n00:03:00.000 asd\n00:00:02.000 100.0\n!"),
+				content: []byte("00:00:00.000 0.0\n00:03:00.000 asd\n00:00:02.000 100.0"),
 			},
-			want: fmt.Errorf("invalid distance format at row 1 with values 'asd', input [00:00:00.000 0.0 00:03:00.000 asd 00:00:02.000 100.0]"),
+			want: fmt.Errorf("invalid distance format at row 1 with values 'asd', input '00:00:00.000 0.0\n00:03:00.000 asd\n00:00:02.000 100.0'"),
 		},
 		{
 			prepare: func(f *fields) {},
 			name:    "Error invalid distance format",
 			args: args{
-				content: []byte("00:00:00.000 0.0\n00:03:00.000 asd\n00:00:02.000 100.0\n!"),
+				content: []byte("00:00:00.000 0.0\n00:03:00.000 asd\n00:00:02.000 100.0"),
 			},
-			want: fmt.Errorf("invalid distance format at row 1 with values 'asd', input [00:00:00.000 0.0 00:03:00.000 asd 00:00:02.000 100.0]"),
+			want: fmt.Errorf("invalid distance format at row 1 with values 'asd', input '00:00:00.000 0.0\n00:03:00.000 asd\n00:00:02.000 100.0'"),
 		},
 		{
 			prepare: func(f *fields) {},
 			name:    "Error total mileage is 0.0m",
 			args: args{
-				content: []byte("00:00:00.000 0.0\n00:03:00.000 0.0\n00:08:00.000 0.0\n!"),
+				content: []byte("00:00:00.000 0.0\n00:03:00.000 0.0\n00:08:00.000 0.0"),
 			},
-			want: fmt.Errorf("total mileage is 0.0m, input [00:00:00.000 0.0 00:03:00.000 0.0 00:08:00.000 0.0]"),
+			want: fmt.Errorf("total mileage is 0.0m, input '00:00:00.000 0.0\n00:03:00.000 0.0\n00:08:00.000 0.0'"),
 		},
 	}
 

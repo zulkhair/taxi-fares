@@ -3,7 +3,6 @@ package handler
 import (
 	"bufio"
 	"fmt"
-	"github.com/rs/zerolog/log"
 	taxidatadomain "github.com/zulkhair/taxi-fares/domain/taxidata"
 	"os"
 	"strings"
@@ -12,18 +11,26 @@ import (
 
 func (h *Handler) CalculateFares(in *os.File) (err error) {
 	/*** User Input ***/
-	fmt.Println("Enter Lines (To submit, input only '!') :")
 	var lines []string
+	var errorMessage string
 
 	scn := bufio.NewScanner(in)
+	first := true
 	for scn.Scan() {
 		line := scn.Text()
-		if len(line) == 1 {
-			if line[0] == '!' {
-				break
-			}
+		if len(line) == 0 {
+			break
 		}
+		// append taxi data
 		lines = append(lines, line)
+
+		// construct error message
+		if first {
+			first = false
+		} else {
+			errorMessage += "\n"
+		}
+		errorMessage += line
 	}
 
 	/*** Validating Input ***/
@@ -34,36 +41,31 @@ func (h *Handler) CalculateFares(in *os.File) (err error) {
 
 	// Check for the number of lines
 	if len(lines) < 2 {
-		log.Error().Msgf(taxidatadomain.LessThanTwoLinesData, lines)
-		return fmt.Errorf(taxidatadomain.LessThanTwoLinesData, lines)
+		return fmt.Errorf(taxidatadomain.LessThanTwoLinesData, errorMessage)
 	}
 
 	// Iterate lines of raw taxi data list
 	for rowCount, line := range lines {
 		// Check for blank line
 		if len(strings.TrimSpace(line)) == 0 {
-			log.Error().Msgf(taxidatadomain.BlankLineError, rowCount, lines)
-			return fmt.Errorf(taxidatadomain.BlankLineError, rowCount, lines)
+			return fmt.Errorf(taxidatadomain.BlankLineError, rowCount, errorMessage)
 		}
 
 		// Parse the input line
 		parts := strings.Fields(line)
 		if len(parts) != 2 {
-			log.Error().Msgf(taxidatadomain.ImproperFormat, rowCount, lines)
-			return fmt.Errorf(taxidatadomain.ImproperFormat, rowCount, lines)
+			return fmt.Errorf(taxidatadomain.ImproperFormat, rowCount, errorMessage)
 		}
 
 		// Parse elapsed time
 		elapsedTime, err := time.Parse("15:04:05.000", parts[0])
 		if err != nil {
-			log.Error().Msgf(taxidatadomain.InvalidTimeFormat, rowCount, lines)
-			return fmt.Errorf(taxidatadomain.InvalidTimeFormat, rowCount, lines)
+			return fmt.Errorf(taxidatadomain.InvalidTimeFormat, rowCount, errorMessage)
 		}
 
 		// Check for past time
 		if prevTime != (time.Time{}) && !elapsedTime.After(prevTime) {
-			log.Error().Msgf(taxidatadomain.PastTimeHasSent, rowCount, lines)
-			return fmt.Errorf(taxidatadomain.PastTimeHasSent, rowCount, lines)
+			return fmt.Errorf(taxidatadomain.PastTimeHasSent, rowCount, errorMessage)
 		}
 
 		// Check the interval between records
@@ -72,15 +74,13 @@ func (h *Handler) CalculateFares(in *os.File) (err error) {
 			prevTime, _ = time.Parse("15:04:05.000", "00:00:00.000")
 		}
 		if elapsedTime.Sub(prevTime) > 5*time.Minute {
-			log.Error().Msgf(taxidatadomain.IntervalBetweenRecordsMoreThan5Minutes, rowCount, lines)
-			return fmt.Errorf(taxidatadomain.IntervalBetweenRecordsMoreThan5Minutes, rowCount, lines)
+			return fmt.Errorf(taxidatadomain.IntervalBetweenRecordsMoreThan5Minutes, rowCount, errorMessage)
 		}
 
 		// Parse distance
 		distance, err := parseDistance(parts[1])
 		if err != nil {
-			log.Error().Msgf(taxidatadomain.InvalidDistanceFormat, rowCount, parts[1], lines)
-			return fmt.Errorf(taxidatadomain.InvalidDistanceFormat, rowCount, parts[1], lines)
+			return fmt.Errorf(taxidatadomain.InvalidDistanceFormat, rowCount, parts[1], errorMessage)
 		}
 
 		// calculate mileage difference
@@ -99,8 +99,7 @@ func (h *Handler) CalculateFares(in *os.File) (err error) {
 
 	// Check if the total mileage is 0.0m
 	if taxiData[len(taxiData)-1].Distance == 0.0 {
-		log.Error().Msgf(taxidatadomain.TotalMileageZero, lines)
-		return fmt.Errorf(taxidatadomain.TotalMileageZero, lines)
+		return fmt.Errorf(taxidatadomain.TotalMileageZero, errorMessage)
 	}
 
 	/*** Usecase Logic ***/
