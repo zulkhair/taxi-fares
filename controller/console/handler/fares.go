@@ -9,6 +9,7 @@ import (
 	"time"
 )
 
+// CalculateFares is a function to start input, calculate fares, and print output
 func (h *Handler) CalculateFares(in *os.File) (err error) {
 	/*** User Input ***/
 	var lines []string

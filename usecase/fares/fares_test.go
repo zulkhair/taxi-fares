@@ -8,6 +8,7 @@ import (
 	taxidatadomain "github.com/zulkhair/taxi-fares/domain/taxidata"
 )
 
+// createTaxiData is function to make taxi data creation easier
 func createTaxiData(hour, minute, second, nanosecond int, distance, mileageDifference float64) taxidatadomain.TaxiData {
 	t := time.Time{}
 	return taxidatadomain.TaxiData{
@@ -17,10 +18,12 @@ func createTaxiData(hour, minute, second, nanosecond int, distance, mileageDiffe
 	}
 }
 func TestFares_CalculateFares(t *testing.T) {
+	// Input parameters
 	type args struct {
 		taxiData []taxidatadomain.TaxiData
 	}
 
+	// Test Cases
 	tests := []struct {
 		want    *taxidatadomain.Fares
 		name    string
@@ -106,9 +109,10 @@ func TestFares_CalculateFares(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-
+			// Prepare test
 			fares := New()
 
+			// Run test
 			got := fares.CalculateFares(tt.args.taxiData)
 			testutil.Equals(t, tt.want, got)
 		})

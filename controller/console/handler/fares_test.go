@@ -14,12 +14,16 @@ import (
 )
 
 func TestHandler_CalculateFares(t *testing.T) {
+	// Mock
 	type fields struct {
 		fares *mock_fares.MockUsecase
 	}
+	// Input parameters
 	type args struct {
 		content []byte
 	}
+
+	// Test Case
 	tests := []struct {
 		prepare func(f *fields)
 		name    string
@@ -28,6 +32,7 @@ func TestHandler_CalculateFares(t *testing.T) {
 	}{
 		{
 			prepare: func(f *fields) {
+				// mock usecase
 				f.fares.EXPECT().CalculateFares(gomock.Any()).Return(&taxidata.Fares{
 					Fare: 100,
 					TaxiData: []taxidata.TaxiData{
@@ -131,11 +136,9 @@ func TestHandler_CalculateFares(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			// prepare mock
 			ctrl := gomock.NewController(t)
-
 			f := &fields{
 				fares: mock_fares.NewMockUsecase(ctrl),
 			}
-
 			if tt.prepare != nil {
 				tt.prepare(f)
 			}

@@ -28,6 +28,7 @@ func New() (*Console, error) {
 	return c, nil
 }
 
+// StartApp is the function to start the console app calculating fares.
 func (c *Console) StartApp() error {
 	return c.handler.CalculateFares(os.Stdin)
 }
