@@ -1,2 +1,4 @@
 log:
   file: log/app.log
+
+fares: 400

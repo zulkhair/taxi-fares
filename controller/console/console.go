@@ -2,6 +2,7 @@ package console
 
 import (
 	"github.com/zulkhair/taxi-fares/controller/console/handler"
+	"github.com/zulkhair/taxi-fares/domain/config"
 	"github.com/zulkhair/taxi-fares/usecase/fares"
 	"os"
 )
@@ -12,10 +13,10 @@ type Console struct {
 }
 
 // New creates a new console object.
-func New() (*Console, error) {
+func New(config *config.Config) (*Console, error) {
 
 	// Instantiate usecase
-	rpsUsecase := fares.New()
+	rpsUsecase := fares.New(config.Fares)
 
 	// Instantiate handler
 	h := handler.New(rpsUsecase)

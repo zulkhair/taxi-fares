@@ -44,9 +44,9 @@ func main() {
 	// mode switch
 	switch mode {
 	case "http":
-		startHttp()
+		startHttp(c)
 	case "console":
-		startConsole()
+		startConsole(c)
 	default:
 		log.Fatal().Msgf("Mode '%s' not found", mode)
 	}
@@ -77,19 +77,19 @@ func readConfigFile() *config.Config {
 }
 
 // startHttp is function to start and serve HTTP server
-func startHttp() {
+func startHttp(config *config.Config) {
 	// Todo on the next improvement
 	fmt.Println("HTTP mode coming soon, still on development")
 	fmt.Println("Switching to console mode")
-	startConsole()
+	startConsole(config)
 }
 
 // startConsole is function to start console mode, open stdin and print stdout
-func startConsole() {
+func startConsole(config *config.Config) {
 	log.Info().Msgf("Starting console")
 
 	// Create console instance
-	c, err := console.New()
+	c, err := console.New(config)
 	if err != nil {
 		log.Fatal().Msgf("Cannot start console, err : %v", err)
 	}

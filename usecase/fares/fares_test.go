@@ -110,7 +110,7 @@ func TestFares_CalculateFares(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// Prepare test
-			fares := New()
+			fares := New(400)
 
 			// Run test
 			got := fares.CalculateFares(tt.args.taxiData)
