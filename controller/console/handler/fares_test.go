@@ -116,11 +116,11 @@ func TestHandler_CalculateFares(t *testing.T) {
 		},
 		{
 			prepare: func(f *fields) {},
-			name:    "Error invalid distance format",
+			name:    "Error invalid distance format 18a0",
 			args: args{
-				content: []byte("00:00:00.000 0.0\n00:03:00.000 asd\n00:00:02.000 100.0"),
+				content: []byte("00:00:00.000 0.0\n00:03:00.000 18a0\n00:05:02.000 100.0"),
 			},
-			want: fmt.Errorf("invalid distance format at row 1 with values 'asd', input '00:00:00.000 0.0\n00:03:00.000 asd\n00:00:02.000 100.0'"),
+			want: fmt.Errorf("invalid distance format at row 1 with values '18a0', input '00:00:00.000 0.0\n00:03:00.000 18a0\n00:05:02.000 100.0'"),
 		},
 		{
 			prepare: func(f *fields) {},

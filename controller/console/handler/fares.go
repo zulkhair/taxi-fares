@@ -5,6 +5,8 @@ import (
 	"fmt"
 	taxidatadomain "github.com/zulkhair/taxi-fares/domain/taxidata"
 	"os"
+	"regexp"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -117,8 +119,17 @@ func (h *Handler) CalculateFares(in *os.File) (err error) {
 
 // parseDistance is function to parse distance from string
 func parseDistance(distanceStr string) (float64, error) {
-	var distance float64
-	_, err := fmt.Sscanf(distanceStr, "%f", &distance)
+	// Define a regular expression to match numeric parts
+	re := regexp.MustCompile(`^([+-]?\d+(\.\d+)?)$`)
+
+	// Find the first match in the input string
+	match := re.FindString(distanceStr)
+
+	if match == "" {
+		return 0.0, fmt.Errorf("invalid distance format")
+	}
+	// Convert the matched string to a float64
+	distance, err := strconv.ParseFloat(match, 64)
 	if err != nil {
 		return 0.0, fmt.Errorf("invalid distance format")
 	}
